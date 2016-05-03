@@ -1,5 +1,7 @@
 var express = require('express');
+var bodyParser = require('body-parser'); //reads a form's input and stores it as a javascript object accessible through `req.body` 
 var app = express();
+app.use(bodyParser());
 
 
 function sayHelloTo(name) {
@@ -22,7 +24,7 @@ function div(num1, num2) {
   return num1 / num2;
 }
 
-
+function
 
 
 app.get('/hello', function(req, res) {
@@ -73,6 +75,41 @@ app.get('/calculator/:operation/:num1/:num2', function(req, res) {
   else {
     res.send(fullAnswer); //takes our answer and sends it to the page. 
   }
+});
+
+app.get('/createContent', function(req, res) {
+
+  var options = {
+    root: __dirname + '/'
+  };
+
+  //var fileName = req.params.name;
+  res.sendFile('form.html', options, function(err) {
+    if (err) {
+      console.log(err);
+      res.status(err.status).end();
+    }
+    else {
+      console.log('Sent:', 'form.html');
+    }
+  });
+
+
+});
+
+
+
+
+
+app.post('/createContent', function(req, res) {
+
+  console.log(req.body)
+  var title = req.body.title;
+  var URL = req.body.url;
+  
+  //call the function that insert the title and URL to mySQL
+  
+  res.send("OK");
 });
 
 
