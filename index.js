@@ -9,6 +9,7 @@ app.use(cookieParser());
 app.use(bodyParser());
 
 
+//FUNCTIONS
 function sayHelloTo(name) {
   return "<h1>Hello _" + name + "_!</h1>";
 }
@@ -29,12 +30,15 @@ function div(num1, num2) {
   return num1 / num2;
 }
 
+
+//app.use's
 app.use(function(req, res, next) { //Middleware. This particular bit will run for every request done (because we are using 'use').
   console.log(req.cookies);
   next();
 });
 
 
+//EXERCISES
 
 //Exercise 1: Create a web server that can listen to requests for /hello, and respond with some HTML that says <h1>Hello World!</h1>
 app.get('/hello', function(req, res) { //if you detect any incoming requests where the method is get, then run this function. request is like the input to your function. response is an object with what you send(specific to the stuff you're trying to do). send is like return. 
@@ -129,11 +133,10 @@ app.get('/calculator/:operation*?', function(request, response) { //the operatio
 
 
 //Exercise 4: Retrieving data from our database
-
 app.get('/posts', function(request, response) {
   redditAPI.getAllPosts(function(err, posts) {
     if (err) {
-      response.status(500).send('oops, try agan later')
+      response.status(500).send('oops, try again later')
     }
     else {
       var listItems = posts.map(function(post) {
@@ -169,20 +172,85 @@ app.get('/createContent', function(req, res) {
 
 
 //Exercise 6: Receiving data from our form. In this exercise, we will write our first POST endpoint. The resource will be the same, /createContent, but we will be writing a second endpoint using app.post instead.
-
 app.post('/createContent', function(req, res) {
 
   console.log(req.body);
   var title = req.body.title;
   var URL = req.body.url;
 
-  redditAPI.createPost({userId: 1, url:URL, title: title},function(err, posts) {
-      res.send(posts);
+  redditAPI.createPost({
+    userId: 1,
+    url: URL,
+    title: title
+  }, function(err, posts) {
+    res.send(posts);
   });
   //here call the function that insert the title and URL to mySQL
 
   res.send("OK");
 });
+
+
+
+//REDDIT PAGES
+
+//Homepage:
+app.get('/resource/:sort', function(request, response) { //sets a choice to pass a sort function to the page.
+  var sort = request.params.sort; //refers to the dynamic 'sort' part above (indicated by the : and the use of params), and says to store the particular request the user makes (add...) in the var 'sort'.
+
+  if (sort === 'topPosts') { //if the sort option is identified as 'topPosts'...
+    redditAPI.getTopPosts(function(err, result) { //...call the getTopPosts function
+      if (err) {
+        response.status(500).send("Try again later.");
+      }
+      else {
+        response.send(result);
+      }
+    });
+  }
+  
+  else if (sort === 'hotPosts') { //if the sort option is identified as 'hotPosts'...
+    redditAPI.getHotPosts(function(err, result) { //...call the function
+      if (err) {
+        response.status(500).send("Try again later.");
+      }
+      else {
+        response.send(result);
+      }
+    }); //...call the function
+  }
+  
+  else if (sort === 'newPosts') { 
+    redditAPI.getNewPosts(function(err, result) { //...call the function
+      if (err) {
+        response.status(500).send("Try again later.");
+      }
+      else {
+        response.send(result);
+      }
+    });
+  }
+  
+  else if (sort === 'controversialPosts') { //if the sort option is identified as 'controversialPosts'...
+    redditAPI.getControversialPosts(function(err, result) { //...call the function
+      if (err) {
+        response.status(500).send("Try again later.");
+      }
+      else {
+        response.send(result);
+      }
+    });
+  }
+  
+  else {
+    response.send({
+      success: true,
+      result: 'bad operation'
+    });
+  }
+  
+});
+
 
 
 
