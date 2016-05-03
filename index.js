@@ -251,6 +251,24 @@ app.get('/resource/:sort', function(request, response) { //sets a choice to pass
   
 });
 
+//SignUp
+app.get('/signup', function(request, response) {
+//The signup page will be a simple page with an HTML <form>. 
+//The form will have username and password fields, as well as a "signup" submit button.
+});
+
+//SignUp
+app.get('/login', function(request, response) {
+//The login page will be a simple page with an HTML <form>. 
+//The form will have username and password fields, as well as a "login" submit button.
+});
+
+//SignUp
+app.get('/createpost', function(request, response) {
+//The create post page will also be a simple page with an HTML <form>. 
+//The form will have title and URL fields, as well as a "create" submit button.
+});
+
 
 
 
