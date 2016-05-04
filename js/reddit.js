@@ -1,9 +1,9 @@
 var bcrypt = require('bcrypt');
 var HASH_ROUNDS = 10;
 
-module.exports = function RedditAPI(conn) {
+module.exports = function RedditAPI(conn) { //creates an object with all the below functions. this means we can later export them all and call them with reference to this object, for example RedditAPI.createUser
     return {
-        
+
         createUser: function(user, callback) {
 
             // first we have to hash the password...
@@ -59,7 +59,7 @@ module.exports = function RedditAPI(conn) {
                 }
             });
         },
-        
+
         createPost: function(post, callback) {
             conn.query(
                 'INSERT INTO `posts` (`userId`, `title`, `url`, `createdAt`) VALUES (?, ?, ?, ?)', [post.userId, post.title, post.url, null],
@@ -87,7 +87,7 @@ module.exports = function RedditAPI(conn) {
                 }
             );
         },
-        
+
         getAllPosts: function(options, callback) {
             // In case we are called without an options parameter, shift all the parameters manually
             if (!callback) {
@@ -144,7 +144,7 @@ module.exports = function RedditAPI(conn) {
 
             );
         },
-        
+
         getAllPostsForUser: function(userId, options, callback) {
             // In case we are called without an options parameter, shift all the parameters manually
             if (!callback) {
@@ -199,7 +199,7 @@ module.exports = function RedditAPI(conn) {
                 }
             );
         },
-        
+
         getSinglePost: function(postId, callback) {
 
 
@@ -244,7 +244,7 @@ module.exports = function RedditAPI(conn) {
                 }
             );
         },
-        
+
         createSubreddit: function(subreddits, callback) {
             conn.query(
                 'INSERT INTO `subreddits` (`name`, `description`) VALUES (?, ?)', [subreddits.name, subreddits.description],
@@ -269,10 +269,118 @@ module.exports = function RedditAPI(conn) {
                             }
                         );
                     }
+                })
+        },
+
+        getAllSubreddits: function(callback) {
+            conn.query(`
+        SELECT s.id AS sId, name AS sName, url AS sURL, description AS sDesc, s.createdAt AS sCreatedAt, s.updatedAt AS sUpdatedAt
+        FROM subreddits AS s
+        ORDER BY s.createdAt DESC
+        `, function(err, results) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    var subreddits = results.map(function(results) {
+                        var subsObj = {
+                            "id": results.sId,
+                            "name": results.sName,
+                            "url": results.sURL,
+                            "createdAt": results.sCreatedAt,
+                            "updatedAt": results.sUpdatedAt,
+                        };
+                        return subsObj;
+                    });
+
+                    callback(null, subreddits);
+                }
+            });
+        },
+
+        createComment: function(comment, callback) {
+            var ifExists;
+            if (comment.parentId) {
+                ifExists = comment.parentId;
+            }
+            else {
+                ifExists = null;
+            }
+            conn.query(
+                'INSERT INTO comments (comment, userId, postId, parentId, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ? );', [comment.text, comment.userId, comment.postId, ifExists, null, null],
+                function(err, result) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        /* Comment inserted successfully. Let's use the result.insertId to retrieve the comment and send it to the caller! */
+                        conn.query(
+                            'SELECT `id`,`comment`, `userId`, `postId`, `parentId`, `createdAt`, `updatedAt` FROM `comments` WHERE `id` = ?', [result.insertId],
+                            function(err, result) {
+                                if (err) {
+                                    callback(err);
+                                }
+                                else {
+                                    callback(null, result[0]);
+                                }
+                            }
+                        );
+                    }
                 }
             );
-        };
+        },
 
+        getComments: function(maxLevel, parentIds, commentsMap, finalComments, callback) {
+            //Query declared at top level to build it dynamically.
+            var query;
+
+            // need to asign this to that so that I can access the createComment key and use it's value/function
+            var that = this;
+            if (!callback) {
+                // first time function is called
+                callback = parentIds;
+                parentIds = [];
+                commentsMap = {};
+                finalComments = [];
+                query = 'select * from comments where parentId is null';
+            }
+            //base case scenario - always necessary for recursive function so it knows when to stop
+            else if (maxLevel === 0 || parentIds.length === 0) {
+                callback(null, finalComments);
+                return;
+            }
+            else {
+                // gets children comments
+                query = 'SELECT * FROM comments WHERE parentId in (' + parentIds.join(',') + ')'; // this equates to (1, 2, 3, 4, 5...) ~= where id = 1 or id = 2 or id = 3...
+            }
+            conn.query(query, function(err, res) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                res.forEach(
+                    function(comment) {
+                        commentsMap[comment.id] = comment; // set object key to column header
+                        if (comment.parentId === null) {
+                            finalComments.push(comment);
+                        }
+                        else {
+                            var parent = commentsMap[comment.parentId]; // save parentId as var parent
+                            parent.replies = parent.replies || []; // set reply key as existing array or create reply key as empty array
+                            parent.replies.push(comment); // push child comment to replies array
+                        }
+                    }
+                );
+
+                var newParentIds = res.map(function(item) {
+                    return item.id;
+                }); // get next level of parent ids
+                // need to use 'that' to access 'this' so the function can be accessed outside of the function
+                that.getComments(maxLevel - 1, newParentIds, commentsMap, finalComments, callback); // maxlevel -1 counts down to base case, the function calls itself within the function - recursion
+            });
+        },
+
+        /////////SORTING FUNCTIONS/////////
         //formula to sort by decreasing vote score(diff between the nr of upvotes and the nr of downvotes
         getTopPosts: function(options, callback) {
             // In case we are called without an options parameter, shift all the parameters manually
@@ -282,7 +390,6 @@ module.exports = function RedditAPI(conn) {
             }
             var limit = options.numPerPage || 25; // if options.numPerPage is "falsy" then use 25
             var offset = (options.page || 0) * limit;
-
             conn.query(`   
         SELECT 
         posts.id AS id, 
@@ -291,6 +398,9 @@ module.exports = function RedditAPI(conn) {
         posts.userId AS postUserId, 
         posts.createdAt AS postCreatedAt, 
         posts.updatedAt AS postUpdatedAt, 
+        posts.upvotes AS postUpvotes,
+        posts.downvotes AS postDownvotes,
+        ABS(posts.upvotes - posts.downvotes) AS diffUpDown,
         users.id AS userUserId, 
         users.username AS userName, 
         users.createdAt AS userCreatedAt, 
@@ -298,7 +408,7 @@ module.exports = function RedditAPI(conn) {
         FROM posts
         JOIN users
         ON users.id=posts.userId
-        ORDER BY posts.createdAt DESC
+        ORDER BY diffUpDown DESC 
         LIMIT ? OFFSET ?
         `, [limit, offset],
                 function(err, results) {
@@ -313,6 +423,9 @@ module.exports = function RedditAPI(conn) {
                                 "url": current.url,
                                 "createdAt": current.postCreatedAt,
                                 "updatedAt": current.postUpdatedAt,
+                                "upvotes": current.postUpvotes,
+                                "downvotes": current.postDownvotes,
+                                "diffUpDown": current.diffUpDown,
                                 "userId": current.postUserId,
                                 "user": {
                                     "id": current.userUserId,
@@ -321,6 +434,7 @@ module.exports = function RedditAPI(conn) {
                                     "userUpdatedAt": current.userUpdatedAt
                                 }
                             };
+
                             return joinedresults;
                         });
                         callback(null, finalresults);
@@ -330,6 +444,7 @@ module.exports = function RedditAPI(conn) {
 
             );
         },
+
 
         //formula to sort by hotness: the ratio of the "vote score" to the number of seconds since a post has been created. Given the same number of "vote score", a newer post will get a better "hotness score"
         getHotPosts: function(options, callback) {
@@ -506,7 +621,6 @@ module.exports = function RedditAPI(conn) {
                 }
 
             );
-        },
-
+        }
     };
 };
