@@ -230,16 +230,21 @@ app.post('/createPost', function(request, response) {
     // HTTP status code 401 means Unauthorized
     response.status(401).send('You must be logged in to create content!');
   }
-  else {
-    // here we have a logged in user, let's create the post with the user!
+  else { //if it comes here, it means that there actually is a request.loggedInUser...which means we have a logged in user.
+    //console.log(request.loggedInUser);
     redditAPI.createPost({
-      title: request.body.title,
+      title: request.body.title, 
+      content: request.body.content,
       url: request.body.url,
-      userId: request.loggedInUser
+      userId: request.loggedInUser //pass the id of the logged in user to the userId of the post (associate this id with the post).
     }, function(err, post) {
-      // do something with the post object or just response OK to the user :)
-      //response.send("your post was posted. awesome post. well done with that post.");
-      response.redirect('/resource/topPosts');
+      if (err){
+        console.log(err.stack);
+          response.status(500).send('an error occurred. please try again later!');
+      }
+      else {
+      response.send(post);
+      }
     });
   }
 });

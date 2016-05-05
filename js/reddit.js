@@ -18,7 +18,7 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                 else {
                     console.log("password hashing succeeded");
                     conn.query(
-                        'INSERT INTO `users` (`username`,`password`, `createdAt`) VALUES (?, ?, ?)', [user.username, hashedPassword, null],
+                        'INSERT INTO users (`username`,`password`, `createdAt`) VALUES (?, ?, ?)', [user.username, hashedPassword, null],
                         function(err, result) {
                             if (err) {
                                 /*
@@ -113,7 +113,7 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
 
         createPost: function(post, callback) {
             conn.query(
-                'INSERT INTO `posts` (`userId`, `title`, `url`, `createdAt`) VALUES (?, ?, ?, ?)', [post.userId, post.title, post.url, null],
+                'INSERT INTO posts (`userId`, `title`, `content`, `url`, `createdAt`) VALUES (?, ?, ?, ?, ?)', [post.userId, post.title, post.content, post.url, null], //take the userId, title, content, url and createdAt of the post and insert it in the posts table.
                 function(err, result) {
                     if (err) {
                         callback(err);
@@ -124,7 +124,7 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                         the post and send it to the caller!
                         */
                         conn.query(
-                            'SELECT `id`,`title`,`url`,`userId`, `createdAt`, `updatedAt` FROM `posts` WHERE `id` = ?', [result.insertId],
+                            'SELECT `id`,`title`, `content`, `url`,`userId`, `createdAt`, `updatedAt` FROM `posts` WHERE `id` = ?', [result.insertId], //select all these pieces from the posts table where the id matches our result.insertId.
                             function(err, result) {
                                 if (err) {
                                     callback(err);
