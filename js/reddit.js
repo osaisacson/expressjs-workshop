@@ -5,13 +5,13 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
     return {
 
         createUser: function(user, callback) {
-
             // first we have to hash the password...
             bcrypt.hash(user.password, HASH_ROUNDS, function(err, hashedPassword) {
                 if (err) {
                     callback(err);
                 }
                 else {
+                    console.log("password hashing succeeded")
                     conn.query(
                         'INSERT INTO `users` (`username`,`password`, `createdAt`) VALUES (?, ?, ?)', [user.username, hashedPassword, null],
                         function(err, result) {
@@ -59,6 +59,13 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                 }
             });
         },
+
+        checkLogin: function(username, password, callback) {
+            
+conn.query(`SELECT * FROM users WHERE username = ?`);
+bcrypt.compare
+        },
+
 
         createPost: function(post, callback) {
             conn.query(

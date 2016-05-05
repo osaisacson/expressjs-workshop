@@ -92,98 +92,117 @@ app.get('/signup', function(request, response) {
   //Send me the signup.html file:
   var options = {
     root: __dirname + '/html', //you'll find the file you're looking for in the /html folder.
-   headers: {
+    headers: {
       'x-timestamp': Date.now(),
       'x-sent': true
-  }};
+    }
+  };
   response.sendFile('signup.html', options, function(err) {
     if (err) {
       response.status(err.status).end();
     }
     else {
       console.log('Sent:', 'signup.html'); //console.log sent:signup.html
-      return; //return the login.html file to the user.
+      return; //return the signup.html file to the user.
     }
   });
-
 });
 
 app.post('/signup', function(request, response) {
-  var user = request.user;
-      redditAPI.createUser(user, function(err, result) {
-        
-        if (err) {
-          response.status(400).send("username or password incorrect");
-        }
-        else {
-          response.send(result);
-        }
-        response.redirect('/login'); //redirect me to the login page, so we don't send the form info twice.
-      })});
+  var user = request.body.username;
+  var password = request.body.password;
+
+  redditAPI.createUser({
+    username: user,
+    password: password
+  }, function(err, result) {
+
+    if (err) {
+      response.send(" " + err);
+    }
+    else {
+      response.redirect('/login'); //redirect me to the login page, so we don't send the form info twice.
+    }
+  });
+});
 
 
-      //LOG IN
-      app.get('/login', function(request, response) {
+//LOG IN
+app.get('/login', function(request, response) {
 
-        //Send me the login.html file:
-        var options = {
-          root: __dirname + '/html', //you'll find the file you're looking for in the /html folder.
-          headers: {
-            'x-timestamp': Date.now(),
-            'x-sent': true
-          }
-        };
-        response.sendFile('login.html', options, function(err) { //in the response to the user, take the file, its options and...
-          if (err) {
-            console.log(err);
-            response.status(err.status).end(); //if error, respond with error status.
-          }
-          else {
-            console.log('Sent:', 'login.html'); //otherwise, console.log sent:login.html
-            return; //and return the login.html file to the user.
-          }
-        });
+  //Send me the login.html file:
+  var options = {
+    root: __dirname + '/html', //you'll find the file you're looking for in the /html folder.
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
+  };
+  response.sendFile('login.html', options, function(err) { //in the response to the user, take the file, its options and...
+    if (err) {
+      response.status(err.status).end();
+    }
+    else {
+      console.log('Sent:', 'login.html'); //otherwise, console.log sent:login.html
+      return; //and return the login.html file to the user.
+    }
+  });
+});
 
-        //redirect me to the home page, so we don't send the form info twice.
-        response.redirect('/resource');
-      });
+app.post('/login', function(request, response) {
+  var user = request.body.username;
+  var password = request.body.password;
 
+  redditAPI.checkLogin({   //check if they match what's in database
 
-      //CREATE POST
-      app.get('/createpost', function(request, response) {
-
-        //Send me the createpost.html file:
-        var options = {
-          root: __dirname + '/html',
-          headers: {
-            'x-timestamp': Date.now(),
-            'x-sent': true
-          }
-        };
-        response.sendFile('createpost.html', options, function(err) {
-          if (err) {
-            console.log(err);
-            response.status(err.status).end();
-          }
-          else {
-            console.log('Sent:', 'createpost.html');
-            return;
-          }
-        });
-
-        //redirect me to the login page, so we don't send the form info twice.
-        response.redirect('/login');
-      });
+    username: user,
+    password: password
+  }, function(err, result) {
+    if (err) {
+      response.send(" " + err);
+    }
+    else {
+      response.redirect('/resource/topPosts'); //redirect me to the login page, so we don't send the form info twice.
+    }
+  });
+});
 
 
+//CREATE POST
+app.get('/createpost', function(request, response) {
+
+  //Send me the createpost.html file:
+  var options = {
+    root: __dirname + '/html',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
+  };
+  response.sendFile('createpost.html', options, function(err) {
+    if (err) {
+      console.log(err);
+      response.status(err.status).end();
+    }
+    else {
+      console.log('Sent:', 'createpost.html');
+      return;
+    }
+  });
+
+  //redirect me to the login page, so we don't send the form info twice.
+  response.redirect('/login');
+});
 
 
-      /* YOU DON'T HAVE TO CHANGE ANYTHING BELOW THIS LINE :) */
 
-      // Boilerplate code to start up the web server
-      var server = app.listen(process.env.PORT, process.env.IP, function() {
-        var host = server.address().address;
-        var port = server.address().port;
 
-        console.log('Example app listening at http://%s:%s', host, port);
-      });
+/* YOU DON'T HAVE TO CHANGE ANYTHING BELOW THIS LINE :) */
+
+// Boilerplate code to start up the web server
+var server = app.listen(process.env.PORT, process.env.IP, function() {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Example app listening at http://%s:%s', host, port);
+});
