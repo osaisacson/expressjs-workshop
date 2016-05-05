@@ -3,7 +3,9 @@ var app = express();
 var bodyParser = require('body-parser'); //reads a form's input and stores it as a javascript object accessible through `req.body` 
 var cookieParser = require('cookie-parser');
 var mysql = require('mysql');
-//var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt');
+
+
 
 // create a connection to our Cloud9 server
 var connection = mysql.createConnection({
@@ -129,7 +131,7 @@ app.post('/signup', function(request, response) {
 
 //LOG IN
 app.get('/login', function(request, response) {
-
+  
   //Send me the login.html file:
   var options = {
     root: __dirname + '/html', //you'll find the file you're looking for in the /html folder.
@@ -140,29 +142,35 @@ app.get('/login', function(request, response) {
   };
   response.sendFile('login.html', options, function(err) { //in the response to the user, take the file, its options and...
     if (err) {
-      response.status(err.status).end();
+      response.status(err.status).end(); //...either respond with an error message
     }
     else {
-      console.log('Sent:', 'login.html'); //otherwise, console.log sent:login.html
+      console.log('Sent:', 'login.html'); //...or console.log sent:login.html,
       return; //and return the login.html file to the user.
     }
   });
 });
 
 app.post('/login', function(request, response) {
-  var user = request.body.username;
+  var username = request.body.username; //store the username the user is entering into a var called 'username'
   var password = request.body.password;
+  
+  redditAPI.checkLogin(username, password, function(err, user) { //pass the var user and var password to the checkLogin function.
 
-  redditAPI.checkLogin({   //check if they match what's in database
-
-    username: user,
-    password: password
-  }, function(err, result) {
     if (err) {
-      response.send(" " + err);
+      response.status(401).send('Username or password incorrect');
     }
     else {
-      response.redirect('/resource/topPosts'); //redirect me to the login page, so we don't send the form info twice.
+      redditAPI.createSession(user.id, function(err, token) { //call the createSession function, pass it the id of the user and a callback that defines what to do with the result
+        if (err) {
+          response.status(500).send('an error occurred. please try again later!');
+        }
+        else {
+          response.cookie('SESSION', token); // sends the token to the user's cookie pile.
+          response.redirect('/resource/topPosts'); //redirect me to the login page, so we don't send the form info twice.
+        }
+      });
+
     }
   });
 });
