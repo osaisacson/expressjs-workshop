@@ -4,7 +4,7 @@ var secureRandom = require('secure-random');
 
 function createSessionToken() {
     return secureRandom.randomArray(100).map(code => code.toString(36)).join('');
-}
+} //this function needs to be accessible as it's being called by one of our functions within the below object. so we put it here.
 
 module.exports = function RedditAPI(conn) { //creates an object with all the below functions. this means we can later export them all and call them with reference to this object, for example RedditAPI.createUser
     return {
@@ -65,14 +65,14 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
             });
         },
 
-        checkLogin: function(username, passwordToCheck, callback) { //takes the user and password from the request and...
+        checkLogin: function(username, passwordToCheck, callback) { //checkLogin checks if the person that's trying to login already is in our database. It takes the user and password from the request and...
             conn.query(`SELECT * FROM users WHERE username = ?`, [username], function(err, result) { //...says to select all info from the part of the users table where the username we pass it is a match. 
 
                 if (result.length === 0) { //if there is no length to the result (ie there's no result...)
                     callback(new Error('username or password incorrect')); //respond with error message
                 }
                 else {
-                    var user = result[0]; //store the result (the user object returned from mysql) into the variable 'user'
+                    var user = result[0]; //store the result (the user object returned from mysql)  into the variable 'user', 0 stands for the first object in the array, which is the user object :)
                     var actualHashedPassword = user.password; //store the password from the returned object into the var 'actualHashedPassword'
                     bcrypt.compare(passwordToCheck, actualHashedPassword, function(err, result) { //use bcrypt's compare function: pass it the password we want to check(comes from original arguments we pass when calling the checkLogin function)
                         if (result === true) { //if the result of the bcrypt compare function evaluates to true...
@@ -96,6 +96,19 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                     callback(null, token); // pass the token to the callback function
                 }
             })
+        },
+
+        getUserFromSession: function(token, callback) {
+
+            conn.query(`SELECT * FROM sessions WHERE token = ?`, [token], function(err, result) { //...says to select all info from the part of the users table where the username we pass it is a match. 
+
+                if (result.length === 0) { //if there is no length to the result (ie there's no result...)
+                    callback(new Error('No current session for that user')); //respond with error message
+                }
+                else {
+                    callback(null,result[0].userId)
+                }
+            });
         },
 
         createPost: function(post, callback) {
