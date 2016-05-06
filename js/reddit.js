@@ -46,14 +46,6 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                                             callback(err);
                                         }
                                         else {
-                                            /*
-                                            Finally! Here's what we did so far:
-                                            1. Hash the user's password
-                                            2. Insert the user in the DB
-                                            3a. If the insert fails, report the error to the caller
-                                            3b. If the insert succeeds, re-fetch the user from the DB
-                                            4. If the re-fetch succeeds, return the object to the caller
-                                            */
                                             callback(null, result[0]);
                                         }
                                     }
@@ -106,7 +98,7 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                     callback(new Error('No current session for that user')); //respond with error message
                 }
                 else {
-                    callback(null,result[0].userId)
+                    callback(null, result[0].userId)
                 }
             });
         },
@@ -137,6 +129,56 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                     }
                 }
             );
+        },
+
+        createOrUpdateVote: function(vote, callback) {
+            if (vote.vote === 1 || vote.vote === -1 || vote.vote === 0) { //checks if the vote is in the recognized formats.
+                conn.query(
+                    `INSERT INTO votes SET postId = ?, userId = ?, vote = ?, createdAt = ? ON DUPLICATE KEY UPDATE vote = ?`, [vote.postId, vote.userId, vote.vote, null, vote.vote], //if it is in the right format, insert it in thepostId, userId, vote places in the vote table. If theres a duplicate for vote, replace the vote.vote value with the last value.
+                    function(err, result) {
+                        if (err) {
+                            callback(err);
+                        }
+                        else {
+                            console.log(result);
+                            conn.query(
+                                `SELECT * FROM votes WHERE userId = ? AND postId = ?`, [vote.userId, vote.postId], //select all from the votes table where userId and postId matches what we gave you.
+                                function(err, vote) {
+                                    if (err) {
+                                        callback(err);
+                                    }
+                                    else {
+                                        callback(null, vote); //give us the vote result back.
+                                    }
+                                });
+                        }
+                    });
+            }
+            else {
+                callback(new Error("Vote must be 1, -1, or 0."));
+            }
+        },
+        
+        createComment: function(comment, callback) {
+            conn.query(`
+            INSERT INTO comments (text, createdAt, parentId, postId, userId) VALUES (?, ?, ?, ?, ?)`, [comment.text, null, comment.parentId, comment.postId, comment.userId],
+                function(err, result) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        conn.query(`
+                        SELECT * FROM comments WHERE id = ?`, [result.insertId], //select all from the comments table which matches our passed id.
+                            function(err, result) {
+                                if (err) {
+                                    callback(err);
+                                }
+                                else {
+                                    callback(null, result[0]); //return the comment info
+                                }
+                            });
+                    }
+                });
         },
 
         getAllPosts: function(options, callback) {

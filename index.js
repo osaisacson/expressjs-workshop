@@ -16,6 +16,8 @@ var connection = mysql.createConnection({
 });
 
 var redditAPI = require('./js/reddit.js')(connection);
+var voteForm = require('./js/vote.js');
+
 
 //USE - runs for all requests
 app.use(bodyParser());
@@ -48,10 +50,9 @@ app.use(checkLoginToken);
 
 
 
-
 ////////////////////////////////////////REDDIT PAGES/////////////////////////////////////////////////////////////////
 
-//HOMEPAGE(resources)
+//RESOURCE
 app.get('/resource/:sort', function(request, response) { //sets a choice to pass a sort function to the page.
   var sort = request.params.sort; //sets a 'sort' variable that contains the particular sort parameter that was indicated in the request (request.params.sort is like a map that guides us to where to find the info we store)
 
@@ -112,6 +113,7 @@ app.get('/resource/:sort', function(request, response) { //sets a choice to pass
 
 
 //SIGN UP
+//this bit sends the signup page to the user:
 app.get('/signup', function(request, response) {
 
   //Send me the signup.html file:
@@ -132,12 +134,12 @@ app.get('/signup', function(request, response) {
     }
   });
 });
-
+//this bit takes the input the user gives, puts it in the user table (by calling the createUser function), and sends back a response to the user (in this case a redirect to the login page)
 app.post('/signup', function(request, response) {
   var user = request.body.username;
   var password = request.body.password;
 
-  redditAPI.createUser({
+  redditAPI.createUser({ //the createUser function takes an object and a callback. The callback defines what we want done with the result it will give us.
     username: user,
     password: password
   }, function(err, result) {
@@ -153,6 +155,7 @@ app.post('/signup', function(request, response) {
 
 
 //LOG IN
+//this bit sends the login page to the user:
 app.get('/login', function(request, response) {
 
 
@@ -174,12 +177,12 @@ app.get('/login', function(request, response) {
     }
   });
 });
-
+//this bit takes the input the user gives, checks it against the user table (by calling the checkLogin function), and sends back a response to the user (in this case a redirect to the resource/topPosts page)
 app.post('/login', function(request, response) {
-  var username = request.body.username; //store the username the user is entering into a var called 'username'
+  var username = request.body.username; //store the username the users client is entering into a var called 'username'
   var password = request.body.password;
 
-  redditAPI.checkLogin(username, password, function(err, user) { //pass the var user and var password to the checkLogin function, which 
+  redditAPI.checkLogin(username, password, function(err, user) { //pass the var user and var password to the checkLogin function. 
 
     if (err) {
       response.status(401).send('Username or password incorrect');
@@ -201,8 +204,8 @@ app.post('/login', function(request, response) {
 
 
 //CREATE POST
+//this bit sends the createpost page to the user:
 app.get('/createpost', function(request, response) {
-  console.log(request.loggedInUser, "HERE BE HE")
 
   //Send me the createpost.html file:
   var options = {
@@ -223,33 +226,80 @@ app.get('/createpost', function(request, response) {
   });
 
 });
-
+//this bit takes the input the user gives, checks if we already have a logged in user (in which case they're allowed to post), and sends back a response to the user (in this case a redirect to the resource/topPosts page)
 app.post('/createPost', function(request, response) {
 
-  if (!request.loggedInUser) { //checks if the user is logged in
-    // HTTP status code 401 means Unauthorized
-    response.status(401).send('You must be logged in to create content!');
-  }
+  if (!request.loggedInUser) {
+    response.status(401).send('LOG IN!!! YOU MUST BE LOGGED IN!');
+  } //checks if the user is logged in.
+
   else { //if it comes here, it means that there actually is a request.loggedInUser...which means we have a logged in user.
-    //console.log(request.loggedInUser);
-    redditAPI.createPost({
-      title: request.body.title, 
+    redditAPI.createPost({ //createPost takes an object and a callback, the callback identifies what we will do with the result the function will give us.
+      title: request.body.title,
       content: request.body.content,
       url: request.body.url,
       userId: request.loggedInUser //pass the id of the logged in user to the userId of the post (associate this id with the post).
     }, function(err, post) {
-      if (err){
-        console.log(err.stack);
-          response.status(500).send('an error occurred. please try again later!');
+      if (err) {
+        response.status(500).send('an error occurred. please try again later!');
       }
       else {
-      response.send(post);
+        response.send(post); //send the info of the createPost function we just ran.
       }
     });
   }
 });
 
+//SHOW SINGLE POST
+app.get('/post', function(request, response) { //get the post page.
+  var postId = Number(request.query.postid); //sets the var postId to the postId identified in the request.
 
+  redditAPI.getSinglePost(postId, function(err, post) { //calls the getSinglePost function, which takes a postId and a callback that says what to do with the result.
+    if (err) {
+      response.send("<h2>Nope, there ain't no such thang. This is your error: </h2>" + err);
+    } //no such post.
+    else {
+      response.send(post); //give us back the post object that matches the postid we gave it.
+    }
+  });
+}); //shows us one single post, as an object. 
+//OBS: needs to be passed a postId somehow.
+
+//VOTE
+app.post('/vote', function(request, response) {
+
+  if (!request.loggedInUser) { 
+    response.status(401).send('You must be logged in to vote, UNAUTHORIZED! UNAUTHORIZED!');
+  } //checks if the user is logged in
+  else { //if the user is logged in then they are allowed to vote.
+    redditAPI.createOrUpdateVote({ //calls the createOrUpdateVote function, which takes an object and a callback that says what we are to do with the result.
+      vote: Number(request.body.vote), //turns the vote to a number instead of string,identifies the vote in the body of the request as the 'vote' of the object.
+      postId: Number(request.body.postId), //turns the postId into a number instead of string
+      userId: request.loggedInUser, //pass the id of the logged in user to the userId of the post (associate this id with the post).
+    }, function(err, votedPosts) {
+      if (err) {
+        response.status(500).send('an error occurred. please try again later!');
+      }
+      else {
+        redditAPI.getSinglePost(votedPosts[0].postId, function(err, post) { //passes the postId item of the votedPosts object, and a callback, to the getSinglePost function.
+          if (err) {
+            response.status(500).send('Something went wrong. You done BAD. BAD USER.');
+          }
+          else {
+            if (Number(request.body.vote) === -1) {
+              var voteArrow = "down";
+            }
+            else {
+              voteArrow = "up";
+            }
+            response.send("Thanks for voting!");
+          }
+
+        });
+      }
+    })
+  }
+});
 
 
 
