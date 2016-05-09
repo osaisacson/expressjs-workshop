@@ -1,11 +1,40 @@
+// load our API and pass it the connection
+var reddit = require('./js/reddit.js');
+
+
+//mysql
+var mysql = require('mysql');
+
+//react
+var React = require('react');
+var ReactDOM = require('react-dom');
+var render = require('react-dom/server').renderToStaticMarkup;
+
+//express
 var express = require('express');
 var app = express();
-var bodyParser = require('body-parser'); //reads a form's input and stores it as a javascript object accessible through `req.body` 
+app.use(express.static('public'));
+
+//bodyparser - reads a form's input and stores it as a javascript object accessible through `req.body`.
+var bodyParser = require('body-parser');
+app.use(bodyParser());
+
+//cookieparser - helps us make a cookie.
 var cookieParser = require('cookie-parser');
-var mysql = require('mysql');
+app.use(cookieParser()); // adds a `cookies` property to the request (requests.cookies), an object of key:value pairs for all the cookies we set
+app.use(checkLoginToken);
+
+//bcrypt
 var bcrypt = require('bcrypt');
 
+//render
+var render = require('react-dom/server').renderToStaticMarkup;
 
+//import forms
+var voteForm = require('./js/vote.js');
+
+//load all react and styling functions
+var makeHTML = require('./js//makeHTML.js');
 
 // create a connection to our Cloud9 server
 var connection = mysql.createConnection({
@@ -14,27 +43,24 @@ var connection = mysql.createConnection({
   password: '',
   database: 'reddit'
 });
-
 var redditAPI = require('./js/reddit.js')(connection);
-var voteForm = require('./js/vote.js');
 
+// Boilerplate code to start up the web server
+var server = app.listen(process.env.PORT, process.env.IP, function() {
+    var host = server.address().address;
+    var port = server.address().port;
 
-//USE - runs for all requests
-app.use(bodyParser());
-app.use(function(req, res, next) { //Middleware. This particular bit will run for every request done (because we are using 'use').
-
-  next();
+    console.log('Example app listening at http://%s:%s', host, port);
 });
-app.use(cookieParser()); // adds a `cookies` property to the request (requests.cookies), an object of key:value pairs for all the cookies we set
 
+
+//////////////////Functions that will run from this doc///////////////////
 function checkLoginToken(request, response, next) {
 
   // check if there's a SESSION cookie...
   if (request.cookies.SESSION) { //the SESSION comes from the login bit below. This now checks if there currently is a SESSION in the request.
     redditAPI.getUserFromSession(request.cookies.SESSION, function(err, user) { //pass the current session (request.cookies.SESSION) to the function getUserFromSession, together with a callback that tells what to do with the result we get back.
-
       if (user) { //checks if there is a user
-
         request.loggedInUser = user; //sets the logged in user to user
       }
       next();
@@ -45,10 +71,6 @@ function checkLoginToken(request, response, next) {
     next();
   }
 }
-
-app.use(checkLoginToken);
-
-
 
 ////////////////////////////////////////REDDIT PAGES/////////////////////////////////////////////////////////////////
 
@@ -204,7 +226,7 @@ app.post('/login', function(request, response) {
 
 
 //CREATE POST
-//this bit sends the createpost page to the user:
+//sends the createpost page to the user:
 app.get('/createpost', function(request, response) {
 
   //Send me the createpost.html file:
@@ -226,13 +248,11 @@ app.get('/createpost', function(request, response) {
   });
 
 });
-//this bit takes the input the user gives, checks if we already have a logged in user (in which case they're allowed to post), and sends back a response to the user (in this case a redirect to the resource/topPosts page)
+//checks if we already have a logged in user (in which case they're allowed to create a post(via the createPost function)), and sends back the post they just created.
 app.post('/createPost', function(request, response) {
-
   if (!request.loggedInUser) {
     response.status(401).send('LOG IN!!! YOU MUST BE LOGGED IN!');
-  } //checks if the user is logged in.
-
+  } //checks if the user is logged in. if they are, they are allowed to create a post.
   else { //if it comes here, it means that there actually is a request.loggedInUser...which means we have a logged in user.
     redditAPI.createPost({ //createPost takes an object and a callback, the callback identifies what we will do with the result the function will give us.
       title: request.body.title,
@@ -247,8 +267,9 @@ app.post('/createPost', function(request, response) {
         response.send(post); //send the info of the createPost function we just ran.
       }
     });
-  }
+  } //send user to the post they just created.
 });
+
 
 //SHOW SINGLE POST
 app.get('/post', function(request, response) { //get the post page.
@@ -265,9 +286,9 @@ app.get('/post', function(request, response) { //get the post page.
 }); //shows us one single post, as an object. 
 //OBS: needs to be passed a postId somehow.
 
+
 //VOTE
 app.post('/vote', function(request, response) {
-
   if (!request.loggedInUser) { 
     response.status(401).send('You must be logged in to vote, UNAUTHORIZED! UNAUTHORIZED!');
   } //checks if the user is logged in
@@ -301,14 +322,18 @@ app.post('/vote', function(request, response) {
   }
 });
 
-
-
-/* YOU DON'T HAVE TO CHANGE ANYTHING BELOW THIS LINE :) */
-
-// Boilerplate code to start up the web server
-var server = app.listen(process.env.PORT, process.env.IP, function() {
-  var host = server.address().address;
-  var port = server.address().port;
-
-  console.log('Example app listening at http://%s:%s', host, port);
+app.get('/posts', function(request, response) {
+    redditAPI.getAllPosts(function(err, posts) {
+        if (err) {
+            response.status(500).send('try again later!');
+        }
+        else {
+          console.log(posts);
+            var htmlStructure = makeHTML.PostList({
+                posts: posts
+            }); // calling the function that "returns JSX"
+            var html = render(htmlStructure); // rendering the JSX "structure" to HTML
+            response.send(html);
+        }
+    });
 });
