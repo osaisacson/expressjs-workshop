@@ -236,7 +236,6 @@ app.get('/post', function(request, response) { //get the post page.
     }
   });
 }); //shows us one single post, as an object. 
-//OBS: needs to be passed a postId somehow.
 
 
 //VOTE
@@ -281,11 +280,10 @@ app.get('/posts', function(request, response) {
       response.status(500).send('try again later!');
     }
     else {
-      var htmlStructure = makeHTML.PostList({
-        posts: posts
-      }); // calling the function that "returns JSX"
+      var htmlStructure = makeHTML.PostList(posts); // calling the function that "returns JSX"
       var html = render(htmlStructure); // rendering the JSX "structure" to HTML
-      response.send(html);
+      console.log(html);
+      response.send(makeHTML.renderLayout("posts", null, html));
     }
   });
 });

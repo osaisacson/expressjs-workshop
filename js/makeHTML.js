@@ -8,7 +8,6 @@ var app = express();
 
 
 //////////MAIN RENDER FUNCTION/////////////////
-
 function renderLayout(pageTitle, isLoggedIn, content) { //you can add or delete the isLoggedIn if you don't want to use it. it could be used for adding more buttons, for example, if the user is logged in or not.
     //html = html + "<body><nav>... isLoggedIn ? some buttons : different buttons</nav>...<main>" + content + "</main> <footer>...</footer> </html>";
     return (`
@@ -21,14 +20,13 @@ function renderLayout(pageTitle, isLoggedIn, content) { //you can add or delete 
             <body>
                 <nav>
                 <ul>
-                  <li><a href="https://reddit-clone-iblameyourmother.c9users.io/resource/topPosts">TOP POSTS</a></li>
+                  <li><a href="https://reddit-clone-iblameyourmother.c9users.io/posts">TOP POSTS</a></li>
                   <li><a href="https://reddit-clone-iblameyourmother.c9users.io/signup">SIGNUP</a></li>
                   <li><a href="https://reddit-clone-iblameyourmother.c9users.io/login">LOGIN</a></li>
                   <li><a href="https://reddit-clone-iblameyourmother.c9users.io/createPost">CREATE POST</a></li>
                 </ul>
                 </nav
                     ${content}
-                    <img src="pic_mountain.jpg" alt="Mountain View" style="width:304px;height:228px;">
             </body> 
     `);
 }
@@ -44,34 +42,26 @@ function renderLayout(pageTitle, isLoggedIn, content) { //you can add or delete 
 function loginInHTML() {
 
     return (`
-    <form action="/login" method="POST">
-    <section id="login">
-    <div>
-        <input required type="text" name="username" placeholder="Enter your username">
-    </div>
-    <div>
-        <input required type="password" name="password" placeholder="Enter your password">
-    </div>
-    <button type="submit">LOGIN</button>
-    </section>
-</form>`)
+        <div class="cover">
+            <form class="flex-form" action="/login" method="POST">
+                    <input required type="text" name="username" placeholder="username">
+                    <input required type="password" name="password" placeholder="password">
+                    <button class="myButton">LOGIN</button>
+            </form>
+        </div>`);
 
 }
 
 //SIGN UP
 function signupInHTML() {
     return (`
-  <form action="/signup" method="POST">
-      <section id="signup">
-    <div>
-        <input required type="text" name="username" placeholder="Enter a username">
-    </div>
-    <div>
-        <input required type="password" name="password" placeholder="Enter a password">
-    </div>
-    <button type="submit">SIGNUP</button>
-        </section>
-</form>`);
+    <div class="cover">
+            <form class="flex-form" action="/login" method="POST">
+                    <input required type="text" name="username" placeholder="enter a username">
+                    <input required type="password" name="password" placeholder="enter a password">
+                    <button class="myButton">WELCOME</button>
+            </form>
+        </div>`);
 }
 
 //CREATE POST
@@ -95,7 +85,6 @@ function createPostInHTML() {
 
 //VOTE FOR A POST - WILL BE CALLED INSIDE 'VIEW SINGLE POST'
 function voteForm(post) {
-    console.log(post)
     return (`
         <section id= "voting">
                 <div className = 'upVote'>
@@ -136,29 +125,28 @@ function singlePost(post) {
         </div>
     `);
 }
-
 function PostList(data) {
 
-    function Post(dataTwo) {
+//VIEW TOP POSTS
+    var PostItems = data.map(function(item) { //use map on our posts
+        return <Post url={`https://reddit-clone-iblameyourmother.c9users.io/post?postId=${item.id}`} title={item.title} />;
+    });
+    
+        function Post(dataTwo) {
         return (
-            <li>
-      <h2>
-        <a href={dataTwo.url}>{dataTwo.title}</a> (score: {dataTwo.voteScore})
-      </h2>
-    </li>
+        <li>
+            <h2>
+            <a href={dataTwo.url}>{dataTwo.title}</a>
+            </h2>
+        </li>
         );
     }
 
-    var postItems = data.map(function(item) { //use map on our posts
-        console.log(item);
-        return (<Post url={`https://reddit-clone-iblameyourmother.c9users.io/post?postId=${item.id}`} title={item.title} voteScore={item.voteScore}/>);
-    });
-
     return (
-        <div>
-      <h1>Posts page!</h1>
+        <div id="posts">
+      <h1>TOP POSTS</h1>
       <ul>
-        {postItems} 
+        {PostItems} 
       </ul> 
     </div>
     );
@@ -167,7 +155,6 @@ function PostList(data) {
 
 
 //////EXPORTING OUR FUNCTIONS////////
-
 module.exports = {
     PostList: PostList,
     renderLayout: renderLayout,
