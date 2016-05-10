@@ -1,15 +1,300 @@
-p {
-	font-family: Raleway;
+h1 {
+    color: rgba(255, 255, 255, 0.5);
+    font-family: Raleway;
+	font-size: 19px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 200;
+	line-height: 21px;
+	margin: 5px
+}
+h2 {
+    color: rgba(255, 255, 255, 0.8);
+    font-family: Raleway;
 	font-size: 14px;
 	font-style: normal;
 	font-variant: normal;
-	font-weight: 100;
+	font-weight: 200;
 	line-height: 21px;
 }
-
-a {
-    text-decoration: none;
+h2 :hover {
+    color: rgba(255, 255, 255, 1);
+    font-family: Raleway;
+	font-size: 11px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 200;
+	line-height: 21px;
 }
+p {
+	color: rgba(255, 255, 255, 0.5);
+    font-family: Raleway;
+	font-size: 13px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 18px;
+	margin: 5px
+
+}
+a {
+    font-family: Raleway;
+    color: rgba(255, 255, 255, 0.5);
+	text-decoration: none;
+	font-size: 12px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 10px;
+	list-style: none;
+	-webkit-appearance: none;
+}
+u {
+    font-family: Raleway;
+	color: white;
+	text-decoration: none;
+	font-size: 12px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 15px;
+	list-style: none;
+	-webkit-appearance: none;
+}
+li {
+    font-family: Raleway;
+	color: white;
+	text-decoration: none;
+	font-size: 12px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 15px;
+	list-style: none;
+	-webkit-appearance: none;
+}
+body {
+    background-image: url("http://2.bp.blogspot.com/-Kv723PmPEkI/TxZautoOiYI/AAAAAAAABWc/8zsjJVMqNfc/s1600/pieter-hugo-the-hyena-and-other-men-girl-with-hyena-mummy-ahmadu-and-mallam-mantari-lamal-with-mainasara-abuja-nigeria-2005.jpg");
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-attachment: fixed;
+}
+header{
+    position:fixed;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px 0 0 0;
+    -webkit-appearance: none;
+}
+
+/*LITTLE MESS AROUNDS*/
+::-webkit-input-placeholder {
+   color: rgba(255, 255, 255, 0.5);
+   font-family: Raleway;
+   font-size: 13;
+}
+input[type="text"] {
+    color: white;
+    font-family: Raleway;
+    font-size: 13;
+}
+input[type="password"] {
+    color: white;
+    font-family: Raleway;
+    font-size: 13;
+}
+input[type="username"] {
+    color: white;
+    font-family: Raleway;
+    font-size: 13;
+}
+
+/*NAVBAR*/
+nav > ul {
+    flex-direction: row;
+	justify-content: flex-end;
+	font-family: Raleway;
+	font-size: 9px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 14px;
+	padding: 0px;
+	margin: 0.6em;
+}
+nav a:hover { 
+    color: white;
+    font-family: Raleway;
+	font-size: 11px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+}
+nav li {
+    list-style: none;
+}
+
+/*LOGIN & SIGNUP FORM STYLES*/
+.cover{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:fixed;
+}
+.login-signup .myButton{
+    align-items: flex-end;
+    border: 0;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+    line-height:10px;
+    font-size:50px;
+    font-style: normal;
+    border-radius:0;
+    -webkit-appearance: none;
+    font-weight: bolder;
+}
+.login-signup .myButton:hover{
+    align-items: flex-end;
+    border: 0;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 1);
+    line-height:10px;
+    font-size:50px;
+    font-style: normal;
+    border-radius:0;
+    -webkit-appearance: none;
+    font-weight: bolder;
+}
+
+.login-signup > * {
+    flex: 1 1 auto;
+    background:rgba(0,0,0,0.3);
+    line-height:10px;
+    font-family: Raleway;
+    font-size:15px;
+    border-radius:0;
+    outline:0;
+    -webkit-appearance: none
+}
+.login-signup > * :last-child {
+    border-right:0;
+    font-family: Raleway;
+}
+.login-signup {
+    background-color: rgba(0,25,255,0.2)
+    flex-grow: 2;
+    display:flex;
+    justify-content: flex-end;
+    font-family: Raleway;
+    border: 10px solid rgba(0,0,0,0.2);
+    border-radius: 0 0 10px 10px;
+
+}
+
+/*CREATE POST FORM STYLE */
+.createpost .myButton{
+    align-items: flex-end;
+    border: 3px;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+    line-height:10px;
+    font-size:100%;
+    font-style: normal;
+    border-radius:0;
+    -webkit-appearance: none;
+    font-weight: bolder;
+    margin: 5px;
+}
+.createpost .myButton:hover{
+    align-items: flex-end;
+    border: 3px;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 1);
+    line-height:10px;
+    font-size:100%;
+    font-style: normal;
+    border-radius:0;
+    -webkit-appearance: none;
+    font-weight: bolder;
+    margin: 5px;
+}
+
+.createpost .myButton-posting{
+ align-items: flex-end;
+    border: 0;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.5);
+    line-height:14px;
+    font-size:30px;
+    font-style: normal;
+    border-radius:0;
+    text-align: right
+    -webkit-appearance: none;
+    font-weight: bolder;
+}
+.createpost .myButton-posting:hover{
+ align-items: flex-end;
+    border: 0;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 1);
+    line-height:14px;
+    font-size:30px;
+    font-style: normal;
+    border-radius:0;
+    text-align: right
+    -webkit-appearance: none;
+    font-weight: bolder;
+}
+
+.createpost > * {
+    flex: 1 1 auto;
+    background:rgba(0,0,0,0.3);
+    line-height:10px;
+    font-family: Raleway;
+    font-size:15px;
+    border-radius:0;
+    outline:0;
+    -webkit-appearance: none
+}
+.createpost > * :last-child {
+    border-right:0;
+    font-family: Raleway;
+}
+.createpost {
+    background-color: rgba(0,25,255,0.2)
+    flex-grow: 2;
+    display:flex;
+    justify-content: flex-end;
+    font-family: Raleway;
+    border: 10px solid rgba(0,0,0,0.2);
+    border-radius: 0 0 10px 10px;
+}
+
+/*PAGES*/
+#createpost {
+    color:black;
+}
+#voting {
+    color:black;
+}
+
+
+/*video.fullscreen { 
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100;
+  transform: translate(-50%, -50%);
+}*/
 
 /*BACKGROUND VIDEO*/
 /*
@@ -55,147 +340,3 @@ a {
     width: 100%;
 }
 */
-
-body{
-    background-image: url("http://2.bp.blogspot.com/-Kv723PmPEkI/TxZautoOiYI/AAAAAAAABWc/8zsjJVMqNfc/s1600/pieter-hugo-the-hyena-and-other-men-girl-with-hyena-mummy-ahmadu-and-mallam-mantari-lamal-with-mainasara-abuja-nigeria-2005.jpg");
-    background-repeat: no-repeat;
-    background-position: left top;
-    background-attachment: fixed;
-}
-
-
-::-webkit-input-placeholder {
-   color: rgba(255, 255, 255, 0.5);
-   font-family: Raleway;
-   font-size: 13;
-}
-
-input[type="text"] {
-    color: white;
-    font-family: Raleway;
-    font-size: 13;
-}
-
-input[type="password"] {
-    color: white;
-    font-family: Raleway;
-    font-size: 13;
-}
-
-input[type="username"] {
-    color: white;
-    font-family: Raleway;
-    font-size: 13;
-}
-
-/*NAVBAR*/
-nav > ul {
-    flex-direction: row;
-	justify-content: flex-end;
-	font-family: Raleway;
-	font-size: 9px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 100;
-	line-height: 14px;
-	padding: 0px;
-	margin: 0.6em;
-}
-
-nav a:hover { 
-    color: black;
-    font-family: Raleway;
-	font-size: 9px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: bold;
-}
-
-nav li {
-    list-style: none;
-}
-
-.flex-form .myButton{
-    align-items: flex-end;
-    border: 0;
-    padding: 5px;
-    background-color: rgba(0, 0, 0, 0.2);
-    color: rgba(255, 255, 255, 0.5);
-    line-height:10px;
-    font-size:50px;
-    font-style: normal;
-    border-radius:0;
-    -webkit-appearance: none;
-    font-weight: bolder;
-}
-
-.flex-form > * {
-    flex: 1 1 auto;
-    background:rgba(0,0,0,0.3);
-    line-height:10px;
-    font-family: Raleway;
-    font-size:15px;
-    border-radius:0;
-    outline:0;
-    -webkit-appearance: none
-}
-
-.flex-form > * :last-child {
-    border-right:0;
-    font-family: Raleway;
-}
-
-.flex-form {
-    background-color: rgba(0,25,255,0.2)
-    flex-grow: 2;
-    display:flex;
-    justify-content: flex-end;
-    font-family: Raleway;
-    border: 10px solid rgba(0,0,0,0.2);
-    border-radius:5px;
-}
-
-
-.cover{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    position:fixed;
-}
-
-/*PAGES*/
-
-#createpost {
-    color:black;
-}
-#topposts > *{
-	font-family: Raleway;
-	color: white;
-	font-size: 14px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 100;
-	line-height: 21px;
-	background-image: url("http://www.magunga.com/wp-content/uploads/2015/02/chokosh.jpg")
-}
-#voting {
-    color:black;
-}
-#posts > ul, li, a {
-    text-decoration: none;
-    font-family: Raleway;
-	font-style: normal;
-}
-
-
-/*video.fullscreen { 
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  z-index: -100;
-  transform: translate(-50%, -50%);
-}*/

@@ -18,15 +18,19 @@ function renderLayout(pageTitle, isLoggedIn, content) { //you can add or delete 
                 <link rel="stylesheet" href="/css/app.css"/>
                 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />            </head>
             <body>
-                <nav>
-                <ul>
-                  <li><a href="https://reddit-clone-iblameyourmother.c9users.io/posts">TOP POSTS</a></li>
-                  <li><a href="https://reddit-clone-iblameyourmother.c9users.io/signup">SIGNUP</a></li>
-                  <li><a href="https://reddit-clone-iblameyourmother.c9users.io/login">LOGIN</a></li>
-                  <li><a href="https://reddit-clone-iblameyourmother.c9users.io/createPost">CREATE POST</a></li>
-                </ul>
-                </nav
+                <header>
+                    <nav>
+                        <ul>
+                            <li><a href="https://reddit-clone-iblameyourmother.c9users.io/posts">TOP POSTS</a></li>
+                            <li><a href="https://reddit-clone-iblameyourmother.c9users.io/signup">SIGNUP</a></li>
+                            <li><a href="https://reddit-clone-iblameyourmother.c9users.io/login">LOGIN</a></li>
+                            <li><a href="https://reddit-clone-iblameyourmother.c9users.io/createPost">CREATE POST</a></li>
+                        </ul>
+                    </nav
+                </header>
                     ${content}
+                <footer>
+                </footer>
             </body> 
     `);
 }
@@ -43,7 +47,7 @@ function loginInHTML() {
 
     return (`
         <div class="cover">
-            <form class="flex-form" action="/login" method="POST">
+            <form class="login-signup" action="/login" method="POST">
                     <input required type="text" name="username" placeholder="username">
                     <input required type="password" name="password" placeholder="password">
                     <button class="myButton">LOGIN</button>
@@ -56,7 +60,7 @@ function loginInHTML() {
 function signupInHTML() {
     return (`
     <div class="cover">
-            <form class="flex-form" action="/login" method="POST">
+            <form class="login-signup" action="/login" method="POST">
                     <input required type="text" name="username" placeholder="enter a username">
                     <input required type="password" name="password" placeholder="enter a password">
                     <button class="myButton">WELCOME</button>
@@ -67,43 +71,32 @@ function signupInHTML() {
 //CREATE POST
 function createPostInHTML() {
     return (`
- <form action="/createPost" method="POST">
-       <section id="createpost">
-        <div>
-            <input type="text" name="url" placeholder="add a link to your content">
-        </div>
-                <div>
-            <input required type="text" name="title" placeholder="Enter the title of your content">
-        </div>
-        <div>
-            <input required type="text" name="content" placeholder="What do you want to say?">
-        </div>
-        <button type="submit">POST THAT AWESOME POST</button>
-            </section>
-    </form>`)
+        <div class="cover"> 
+            <form class="createpost" action="/createPost" method="POST">
+                <input type="text" name="url" placeholder="add a link to your content">
+                <input required type="text" name="title" placeholder="enter the title of your content">
+                <input required type="text" name="content" placeholder="what do you want to say?">
+                <button class="myButton-posting" type="submit">POST THAT AWESOME POST</button>
+            </form>
+        </div>`);
 }
 
 //VOTE FOR A POST - WILL BE CALLED INSIDE 'VIEW SINGLE POST'
 function voteForm(post) {
     return (`
-        <section id= "voting">
-                <div className = 'upVote'>
-                    <form action="/vote" method="post" >
+            <div class="cover"> 
+                <form class="createpost" action="/vote" method="post" >
                     <input type="hidden" name="vote" value="1" />
                     <input type="hidden" name="postId" value=${post.postID} />
-                    <button type="submit"><span>upvote this</span></button>
-                    </form>
-                    <div id = 'voteScore'>${post.score}</div>
-                </div>
-                <div className = 'downVote'>
-                    <form action="/vote" method="post">
+                    <button class="myButton" type="submit"><span>upvote this</span></button>
+                </form>
+                <form class="createpost" action="/vote" method="post">
                     <input type="hidden" name="vote" value="-1" />
                     <input type="hidden" name="postId" value=${post.postID} />
-                    <button type="submit"><span>downvote this</span></button>
-                    </form>
-                </div>
-        </section>
-    `)
+                    <button class="myButton" type="submit"><span>downvote this</span></button>
+                </form>
+            </div>
+    `);
 }
 
 //VIEW SINGLE POST 
