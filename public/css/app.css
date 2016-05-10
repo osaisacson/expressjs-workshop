@@ -1,0 +1,85 @@
+h1 {
+	font-family: Raleway;
+	font-size: 24px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 36px;
+}
+h3 {
+	font-family: Raleway;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 15.4px;
+}
+p {
+	font-family: Raleway;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 21px;
+}
+
+
+a {
+    text-decoration: none;
+}
+
+nav > ul {
+    flex-direction: row;
+	justify-content: flex-end;
+	font-family: Raleway;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 21px;
+	-webkit-padding-start: 0px;
+}
+
+nav a:hover { 
+    color: black;
+    font-family: Raleway;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+}
+
+nav li {
+    list-style: none;
+}
+
+#signup {
+	font-family: Raleway;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 21px;
+}
+
+#login {
+    color:black;
+}
+
+#createpost {
+    color:black;
+}
+
+#topposts {
+	font-family: Raleway;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 21px;
+}
+
+#voting {
+    color:black;
+}
+

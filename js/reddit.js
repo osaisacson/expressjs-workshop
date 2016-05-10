@@ -105,7 +105,7 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
 
         createPost: function(post, callback) {
             conn.query(
-                'INSERT INTO posts (`userId`, `title`, `content`, `url`, `createdAt`) VALUES (?, ?, ?, ?, ?)', [post.userId, post.title, post.content, post.url, null], //take the userId, title, content, url and createdAt of the post and insert it in the posts table.
+                'INSERT INTO `posts` (`userId`, `title`, `url`, `content`, `createdAt`) VALUES (?, ?, ?, ?, ?)', [post.userId, post.title, post.url, post.content, null], //take the userId, title, url and createdAt of the post and insert it in the posts table.
                 function(err, result) {
                     if (err) {
                         callback(err);
@@ -116,7 +116,7 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                         the post and send it to the caller!
                         */
                         conn.query(
-                            'SELECT `id`,`title`, `content`, `url`,`userId`, `createdAt`, `updatedAt` FROM `posts` WHERE `id` = ?', [result.insertId], //select all these pieces from the posts table where the id matches our result.insertId.
+                            'SELECT `id`,`title`, `url`, `content`, `userId`, `createdAt`, `updatedAt` FROM `posts` WHERE `id` = ?', [result.insertId], //select all these pieces from the posts table where the id matches our result.insertId.
                             function(err, result) {
                                 if (err) {
                                     callback(err);
@@ -231,7 +231,6 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                             return joinedresults;
                         });
                         callback(null, finalresults);
-
                     }
                 }
 
@@ -295,11 +294,11 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
 
         getSinglePost: function(postId, callback) {
 
-
             conn.query(`
         SELECT 
         posts.id AS id, 
         posts.title AS title, 
+        posts.content AS content, 
         posts.url AS url, 
         posts.userId AS postUserId, 
         posts.createdAt AS postCreatedAt, 
@@ -311,7 +310,7 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
         FROM posts 
         JOIN users 
         ON users.id=posts.userId
-        WHERE posts.id= ?
+        WHERE posts.id = ?
         `, [postId],
                 function(err, results) {
                     if (err) {
@@ -321,6 +320,7 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                         var finalResultPost = {
                             "id": results[0].id,
                             "title": results[0].title,
+                            "content": results[0].content,
                             "url": results[0].url,
                             "postCreatedAt": results[0].postCreatedAt,
                             "postUpdatedAt": results[0].postUpdatedAt,
@@ -538,7 +538,6 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
             );
         },
 
-
         //formula to sort by hotness: the ratio of the "vote score" to the number of seconds since a post has been created. Given the same number of "vote score", a newer post will get a better "hotness score"
         getHotPosts: function(options, callback) {
             // In case we are called without an options parameter, shift all the parameters manually
@@ -714,6 +713,7 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
                 }
 
             );
-        }
+        },
+        
     };
 };
