@@ -60,7 +60,7 @@ function loginInHTML() {
 function signupInHTML() {
     return (`
     <div class="cover">
-            <form class="login-signup" action="/login" method="POST">
+            <form class="login-signup" action="/signup" method="POST">
                     <input required type="text" name="username" placeholder="enter a username">
                     <input required type="password" name="password" placeholder="enter a password">
                     <button class="myButton">WELCOME</button>
@@ -87,12 +87,12 @@ function voteForm(post) {
             <div class="cover"> 
                 <form class="createpost" action="/vote" method="post" >
                     <input type="hidden" name="vote" value="1" />
-                    <input type="hidden" name="postId" value=${post.postID} />
+                    <input type="hidden" name="postId" value=${post} />
                     <button class="myButton" type="submit"><span>upvote this</span></button>
                 </form>
                 <form class="createpost" action="/vote" method="post">
                     <input type="hidden" name="vote" value="-1" />
-                    <input type="hidden" name="postId" value=${post.postID} />
+                    <input type="hidden" name="postId" value=${post} />
                     <button class="myButton" type="submit"><span>downvote this</span></button>
                 </form>
             </div>
@@ -113,7 +113,7 @@ function singlePost(post) {
                 </p>
             </div>
             <div className = 'vote'>
-            ${voteForm(post)}
+            ${voteForm(post.id)}
             </div>
         </div>
     `);

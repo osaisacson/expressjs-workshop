@@ -83,7 +83,6 @@ app.get('/resource/:sort', function(request, response) { //sets a choice to pass
         response.status(500).send("Try again later.");
       }
       else {
-        console.log(result)
         response.send(render(makeHTML.PostList(result))); //respond to the user with the result of the function we passed above.
       }
     });
@@ -141,6 +140,8 @@ app.get('/signup', function(request, response) {
 });
 //this bit takes the input the user gives, puts it in the user table (by calling the createUser function), and sends back a response to the user (in this case a redirect to the login page)
 app.post('/signup', function(request, response) {
+  console.log(request)
+
   var user = request.body.username;
   var password = request.body.password;
 
@@ -171,7 +172,6 @@ app.get('/login', function(request, response) {
 app.post('/login', function(request, response) {
   var username = request.body.username; //store the username the users client is entering into a var called 'username'
   var password = request.body.password;
-
   redditAPI.checkLogin(username, password, function(err, user) { //pass the var user and var password to the checkLogin function. 
 
     if (err) {
@@ -184,7 +184,7 @@ app.post('/login', function(request, response) {
         }
         else {
           response.cookie('SESSION', token); // sends the token to the user's cookie pile, names it 'SESSION'
-          response.redirect('/resource/topPosts'); //redirect me to the login page, so we don't send the form info twice.
+          response.redirect('/posts'); //redirect me to the login page, so we don't send the form info twice.
         }
       });
 
@@ -240,7 +240,6 @@ app.get('/post', function(request, response) { //get the post page.
 
 //VOTE
 app.post('/vote', function(request, response) {
-  
   if (!request.loggedInUser) {
     response.status(401).send('You must be logged in to vote, UNAUTHORIZED! UNAUTHORIZED!');
   } //checks if the user is logged in
@@ -250,6 +249,8 @@ app.post('/vote', function(request, response) {
       postId: Number(request.body.postId), //turns the postId into a number instead of string
       userId: request.loggedInUser, //pass the id of the logged in user to the userId of the post (associate this id with the post).
     }, function(err, votedPosts) {
+        console.log(votedPosts)
+
       if (err) {
         response.status(500).send('an error occurred. please try again later!');
       }
@@ -265,12 +266,12 @@ app.post('/vote', function(request, response) {
             else {
               voteArrow = "up";
             }
-            response.send("Thanks for voting!");
+          response.redirect('/posts');
+            
           }
-
         });
       }
-    })
+    });
   }
 });
 
@@ -282,7 +283,6 @@ app.get('/posts', function(request, response) {
     else {
       var htmlStructure = makeHTML.PostList(posts); // calling the function that "returns JSX"
       var html = render(htmlStructure); // rendering the JSX "structure" to HTML
-      console.log(html);
       response.send(makeHTML.renderLayout("posts", null, html));
     }
   });

@@ -59,9 +59,8 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
 
         checkLogin: function(username, passwordToCheck, callback) { //checkLogin checks if the person that's trying to login already is in our database. It takes the user and password from the request and...
             conn.query(`SELECT * FROM users WHERE username = ?`, [username], function(err, result) { //...says to select all info from the part of the users table where the username we pass it is a match. 
-
                 if (result.length === 0) { //if there is no length to the result (ie there's no result...)
-                    callback(new Error('username or password incorrect')); //respond with error message
+                    callback(new Error('username or password incorrect, no length to username.')); //respond with error message
                 }
                 else {
                     var user = result[0]; //store the result (the user object returned from mysql)  into the variable 'user', 0 stands for the first object in the array, which is the user object :)
@@ -134,13 +133,12 @@ module.exports = function RedditAPI(conn) { //creates an object with all the bel
         createOrUpdateVote: function(vote, callback) {
             if (vote.vote === 1 || vote.vote === -1 || vote.vote === 0) { //checks if the vote is in the recognized formats.
                 conn.query(
-                    `INSERT INTO votes SET postId = ?, userId = ?, vote = ?, createdAt = ? ON DUPLICATE KEY UPDATE vote = ?`, [vote.postId, vote.userId, vote.vote, null, vote.vote], //if it is in the right format, insert it in thepostId, userId, vote places in the vote table. If theres a duplicate for vote, replace the vote.vote value with the last value.
+                    `INSERT INTO votes SET postId = ?, userId = ?, votes = ?, createdAt = ? ON DUPLICATE KEY UPDATE votes = ?`, [vote.postId, vote.userId, vote.vote, null, vote.vote], //if it is in the right format, insert it in thepostId, userId, vote places in the vote table. If theres a duplicate for vote, replace the vote.vote value with the last value.
                     function(err, result) {
                         if (err) {
                             callback(err);
                         }
                         else {
-                            console.log(result);
                             conn.query(
                                 `SELECT * FROM votes WHERE userId = ? AND postId = ?`, [vote.userId, vote.postId], //select all from the votes table where userId and postId matches what we gave you.
                                 function(err, vote) {
