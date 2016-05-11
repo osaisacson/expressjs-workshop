@@ -217,7 +217,7 @@ app.post('/createPost', function(request, response) {
         response.status(500).send('an error occurred. please try again later!');
       }
       else {
-        response.redirect(`/posts/${JSON.stringify(newPost.id)}`);
+        response.redirect('https://reddit-clone-iblameyourmother.c9users.io/posts');
       }
     });
   } //send user to the post they just created.
@@ -232,7 +232,7 @@ app.get('/post', function(request, response) { //get the post page.
       response.send("<h2>Nope, there ain't no such thang. This is your error: </h2>" + err);
     } //no such post.
     else {
-      response.send(makeHTML.renderLayout(null, null, makeHTML.singlePost(post))); //give us back the post object that matches the postid we gave it.
+      response.send(makeHTML.singlePost(post)); //give us back the post object that matches the postid we gave it.
     }
   });
 }); //shows us one single post, as an object. 

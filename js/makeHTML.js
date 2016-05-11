@@ -11,27 +11,36 @@ var app = express();
 function renderLayout(pageTitle, isLoggedIn, content) { //you can add or delete the isLoggedIn if you don't want to use it. it could be used for adding more buttons, for example, if the user is logged in or not.
     //html = html + "<body><nav>... isLoggedIn ? some buttons : different buttons</nav>...<main>" + content + "</main> <footer>...</footer> </html>";
     return (`
-     <!doctype>
-        <html>
-            <head>
-                <title>${pageTitle}</title>
-                <link rel="stylesheet" href="/css/app.css"/>
-                <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />            </head>
-            <body>
-                <header>
-                    <nav>
-                        <ul>
-                            <li><a href="https://reddit-clone-iblameyourmother.c9users.io/posts">TOP POSTS</a></li>
-                            <li><a href="https://reddit-clone-iblameyourmother.c9users.io/signup">SIGNUP</a></li>
-                            <li><a href="https://reddit-clone-iblameyourmother.c9users.io/login">LOGIN</a></li>
-                            <li><a href="https://reddit-clone-iblameyourmother.c9users.io/createPost">CREATE POST</a></li>
-                        </ul>
-                    </nav
-                </header>
-                    ${content}
-                <footer>
-                </footer>
-            </body> 
+<!doctype>
+    <html>
+        <head>
+            <title>${pageTitle}</title>
+            <link rel="stylesheet" href="../css/app.css"/>
+            <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />            
+        </head>
+        <body>
+            <header>
+                <nav>
+                    <ul>
+                        <li><a href="https://reddit-clone-iblameyourmother.c9users.io/posts">NEW POSTS</a></li>
+                        <li><a href="https://reddit-clone-iblameyourmother.c9users.io/signup">SIGNUP</a></li>
+                        <li><a href="https://reddit-clone-iblameyourmother.c9users.io/login">LOGIN</a></li>
+                        <li><a href="https://reddit-clone-iblameyourmother.c9users.io/createPost">CREATE POST</a></li>
+                    </ul>
+                </nav
+            </header>
+            <main>
+            <div id="allcontent">
+                ${content}
+                </div>
+
+            </main>
+            <footer>
+            </footer>
+        <script src="https://code.jquery.com/jquery-1.12.3.js"></script>
+        <script src="../js/main.js"></script>
+        </body>
+    </html>
     `);
 }
 //renderLayout shows both the stuff we always want to be there + adds our unique content. 
@@ -84,7 +93,7 @@ function createPostInHTML() {
 //VOTE FOR A POST - WILL BE CALLED INSIDE 'VIEW SINGLE POST'
 function voteForm(post) {
     return (`
-            <div class="cover"> 
+            <div class="cover">
                 <form class="createpost" action="/vote" method="post" >
                     <input type="hidden" name="vote" value="1" />
                     <input type="hidden" name="postId" value=${post} />
@@ -103,7 +112,7 @@ function voteForm(post) {
 function singlePost(post) {
     //makes the var voteForm (which gives us the voting functionality) accessible within the return below.
     return (`
-        <div className = 'post'>
+        <div id = 'singlePost'>
             <h1>${post.title}</h1>
             <div>
                 <p>user: ${post.user.username} <br />
@@ -120,7 +129,7 @@ function singlePost(post) {
 }
 function PostList(data) {
 
-//VIEW TOP POSTS
+//VIEW NEW POSTS
     var PostItems = data.map(function(item) { //use map on our posts
         return <Post url={`https://reddit-clone-iblameyourmother.c9users.io/post?postId=${item.id}`} title={item.title} />;
     });
@@ -137,7 +146,7 @@ function PostList(data) {
 
     return (
         <div id="posts">
-      <h1>TOP POSTS</h1>
+      <h1>NEW POSTS</h1>
       <ul>
         {PostItems} 
       </ul> 

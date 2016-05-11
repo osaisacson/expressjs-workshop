@@ -78,6 +78,7 @@ body {
     background-repeat: no-repeat;
     background-position: left top;
     background-attachment: fixed;
+    background-size: 100%
 }
 header{
     position:fixed;
@@ -195,8 +196,8 @@ nav li {
 /*CREATE POST FORM STYLE */
 .createpost .myButton{
     align-items: flex-end;
-    border: 3px;
-    padding: 5px;
+    border: 2px;
+    padding: 4px;
     background-color: rgba(0, 0, 0, 0.2);
     color: rgba(255, 255, 255, 0.5);
     line-height:10px;
@@ -266,21 +267,58 @@ nav li {
     font-family: Raleway;
 }
 .createpost {
-    background-color: rgba(0,25,255,0.2)
     flex-grow: 2;
     display:flex;
     justify-content: flex-end;
     font-family: Raleway;
-    border: 10px solid rgba(0,0,0,0.2);
     border-radius: 0 0 10px 10px;
 }
 
+
+
+
 /*PAGES*/
-#createpost {
-    color:black;
+#allcontent {
+    display:flex;
+    align-content: space-between;
+    justify-content: center;
+    /*border-style: solid;
+    border-width: 15px;
+    border-color: black;*/
 }
-#voting {
-    color:black;
+#singlePost{
+   
+}
+
+#posts {
+        background-color: rgba(0, 0, 0, 0.2);
+}
+#posts a{
+    display:flex;
+    justify-content: flex-end;
+    color: rgba(255, 255, 255, 0.5);;
+    font-family: Raleway;
+    text-decoration: none;
+	font-size: 12px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 10px;
+	list-style: none;
+    padding-right: 20px;
+}
+#posts a:hover {
+    display:flex;
+    color:white;
+    font-family: Raleway;
+    text-decoration: none;
+	font-size: 13px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	line-height: 10px;
+	list-style: none;
+	padding-right: 10px;
 }
 
 
