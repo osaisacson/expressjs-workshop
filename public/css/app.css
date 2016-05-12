@@ -1,78 +1,18 @@
-h1 {
-    color: rgba(255, 255, 255, 0.5);
-    font-family: Raleway;
-	font-size: 19px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 200;
-	line-height: 21px;
-	margin: 5px
-}
-h2 {
-    color: rgba(255, 255, 255, 0.8);
-    font-family: Raleway;
-	font-size: 14px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 200;
-	line-height: 21px;
-}
-h2 :hover {
-    color: rgba(255, 255, 255, 1);
-    font-family: Raleway;
-	font-size: 11px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 200;
-	line-height: 21px;
-}
-p {
-	color: rgba(255, 255, 255, 0.5);
-    font-family: Raleway;
-	font-size: 13px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 100;
-	line-height: 18px;
-	margin: 5px
 
-}
-a {
-    font-family: Raleway;
+
+h1{
     color: rgba(255, 255, 255, 0.5);
-	text-decoration: none;
-	font-size: 12px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 100;
-	line-height: 10px;
-	list-style: none;
-	-webkit-appearance: none;
-}
-u {
     font-family: Raleway;
-	color: white;
-	text-decoration: none;
-	font-size: 12px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 100;
-	line-height: 15px;
-	list-style: none;
-	-webkit-appearance: none;
+    margin: 0px;
 }
-li {
-    font-family: Raleway;
-	color: white;
-	text-decoration: none;
-	font-size: 12px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 100;
-	line-height: 15px;
-	list-style: none;
-	-webkit-appearance: none;
+
+ul {
+    list-style: none;
+    margin: 0px;
+    padding: 2px;
 }
+
+/*BODY*/
 body {
     background-image: url("http://2.bp.blogspot.com/-Kv723PmPEkI/TxZautoOiYI/AAAAAAAABWc/8zsjJVMqNfc/s1600/pieter-hugo-the-hyena-and-other-men-girl-with-hyena-mummy-ahmadu-and-mallam-mantari-lamal-with-mainasara-abuja-nigeria-2005.jpg");
     background-repeat: no-repeat;
@@ -80,11 +20,41 @@ body {
     background-attachment: fixed;
     background-size: 100%
 }
-header{
-    position:fixed;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 10px 0 0 0;
-    -webkit-appearance: none;
+
+/*WRAPPER - encompasses the header(which contains the navbar)*/
+#wrapper{
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+}
+
+/*NAVBAR*/
+nav {
+    display:flex;
+    flex-direction: row;
+	background-color: rgba(0, 0, 0, 0.2);
+	padding: 0px;
+	border-radius: 0 10px 0 0;
+}
+nav ul {
+    padding: 5px;
+    margin: 0px;
+}
+nav a { 
+    color: rgba(255, 255, 255, 0.5);
+    width: 100%;
+    font-family: Raleway;
+	font-size: 11px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-decoration: none
+}
+nav a:hover { 
+    color: white;
+}
+nav li {
+    list-style: none;
 }
 
 /*LITTLE MESS AROUNDS*/
@@ -93,46 +63,34 @@ header{
    font-family: Raleway;
    font-size: 13;
 }
+textarea {
+    color: white;
+    font-family: Raleway;
+    font-size: 13;
+    background: rgba(0,0,0,0.1);
+    padding: 5px;
+
+}
 input[type="text"] {
     color: white;
     font-family: Raleway;
     font-size: 13;
+    border-color: transparent;
 }
 input[type="password"] {
     color: white;
     font-family: Raleway;
     font-size: 13;
+    border-color: transparent;
 }
 input[type="username"] {
     color: white;
     font-family: Raleway;
     font-size: 13;
+    border-color: transparent;
 }
 
-/*NAVBAR*/
-nav > ul {
-    flex-direction: row;
-	justify-content: flex-end;
-	font-family: Raleway;
-	font-size: 9px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 100;
-	line-height: 14px;
-	padding: 0px;
-	margin: 0.6em;
-}
-nav a:hover { 
-    color: white;
-    font-family: Raleway;
-	font-size: 11px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: bold;
-}
-nav li {
-    list-style: none;
-}
+
 
 /*LOGIN & SIGNUP FORM STYLES*/
 .cover{
@@ -194,35 +152,23 @@ nav li {
 }
 
 /*CREATE POST FORM STYLE */
+.coverforcreatepost {
+    display:flex;
+    position:fixed;
+}
 .createpost .myButton{
-    align-items: flex-end;
-    border: 2px;
-    padding: 4px;
+    border: 0;
     background-color: rgba(0, 0, 0, 0.2);
     color: rgba(255, 255, 255, 0.5);
-    line-height:10px;
-    font-size:100%;
+    font-size: 25;
     font-style: normal;
-    border-radius:0;
+    text-align: right;
     -webkit-appearance: none;
     font-weight: bolder;
-    margin: 5px;
 }
 .createpost .myButton:hover{
-    align-items: flex-end;
-    border: 3px;
-    padding: 5px;
-    background-color: rgba(0, 0, 0, 0.2);
     color: rgba(255, 255, 255, 1);
-    line-height:10px;
-    font-size:100%;
-    font-style: normal;
-    border-radius:0;
-    -webkit-appearance: none;
-    font-weight: bolder;
-    margin: 5px;
 }
-
 .createpost .myButton-posting{
  align-items: flex-end;
     border: 0;
@@ -251,27 +197,22 @@ nav li {
     -webkit-appearance: none;
     font-weight: bolder;
 }
-
 .createpost > * {
-    flex: 1 1 auto;
     background:rgba(0,0,0,0.3);
-    line-height:10px;
-    font-family: Raleway;
+    line-height:20px;
     font-size:15px;
     border-radius:0;
     outline:0;
-    -webkit-appearance: none
+    -webkit-appearance: none;
+    border-color: transparent;
+    border-radius: 0 22px 0 0;
 }
 .createpost > * :last-child {
     border-right:0;
     font-family: Raleway;
 }
 .createpost {
-    flex-grow: 2;
     display:flex;
-    justify-content: flex-end;
-    font-family: Raleway;
-    border-radius: 0 0 10px 10px;
 }
 
 
@@ -279,44 +220,35 @@ nav li {
 
 /*PAGES*/
 #allcontent {
-    display:flex;
-    align-content: space-between;
     justify-content: center;
-    /*border-style: solid;
-    border-width: 15px;
-    border-color: black;*/
+    display: flex;
 }
 #singlePost{
-   
+    background-color: rgba(0, 0, 0, 0.2);
+    font-family: Raleway;
+    text-decoration: none;
+    font-size: 13px;
+    list-style: none;
+    padding-right: 5px;
+    color: white;
 }
 
 #posts {
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.3);
 }
 #posts a{
-    display:flex;
-    justify-content: flex-end;
-    color: rgba(255, 255, 255, 0.5);;
+    color: rgba(255, 255, 255, 0.5);
     font-family: Raleway;
     text-decoration: none;
-	font-size: 12px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 100;
-	line-height: 10px;
-	list-style: none;
-    padding-right: 20px;
+    font-size: 12px;
+    list-style: none;
+    padding-right: 5px
 }
 #posts a:hover {
-    display:flex;
-    color:white;
+    color: rgba(255, 255, 255, 1);
     font-family: Raleway;
     text-decoration: none;
-	font-size: 13px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 100;
-	line-height: 10px;
-	list-style: none;
-	padding-right: 10px;
+    font-size: 12px;
+    list-style: none;
+    padding-right: 10px
 }

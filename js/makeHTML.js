@@ -19,7 +19,7 @@ function renderLayout(pageTitle, isLoggedIn, content) { //you can add or delete 
             <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway" />            
         </head>
         <body>
-            <header>
+            <div id="wrapper">
                 <nav>
                     <ul>
                         <li><a href="https://reddit-clone-iblameyourmother.c9users.io/posts">NEW POSTS</a></li>
@@ -28,7 +28,6 @@ function renderLayout(pageTitle, isLoggedIn, content) { //you can add or delete 
                         <li><a href="https://reddit-clone-iblameyourmother.c9users.io/createPost">CREATE POST</a></li>
                     </ul>
                 </nav
-            </header>
             <main>
             <div id="allcontent">
                 ${content}
@@ -37,6 +36,7 @@ function renderLayout(pageTitle, isLoggedIn, content) { //you can add or delete 
             </main>
             <footer>
             </footer>
+        </div>
         <script src="https://code.jquery.com/jquery-1.12.3.js"></script>
         <script src="../js/main.js"></script>
         </body>
@@ -80,11 +80,11 @@ function signupInHTML() {
 //CREATE POST
 function createPostInHTML() {
     return (`
-        <div class="cover"> 
+        <div class="coverforcreatepost"> 
             <form class="createpost" action="/createPost" method="POST">
-                <input type="text" name="url" placeholder="add a link to your content">
-                <input required type="text" name="title" placeholder="enter the title of your content">
-                <input required type="text" name="content" placeholder="what do you want to say?">
+                <textarea name="url" placeholder="add a link to your content"></textarea>
+                <textarea required name="title" placeholder="enter the title of your content"></textarea>
+                <textarea required name="content" placeholder="what do you want to say?"></textarea>
                 <button class="myButton-posting" type="submit">POST THAT AWESOME POST</button>
             </form>
         </div>`);
@@ -93,7 +93,6 @@ function createPostInHTML() {
 //VOTE FOR A POST - WILL BE CALLED INSIDE 'VIEW SINGLE POST'
 function voteForm(post) {
     return (`
-            <div class="cover">
                 <form class="createpost" action="/vote" method="post" >
                     <input type="hidden" name="vote" value="1" />
                     <input type="hidden" name="postId" value=${post} />
@@ -103,7 +102,6 @@ function voteForm(post) {
                     <input type="hidden" name="vote" value="-1" />
                     <input type="hidden" name="postId" value=${post} />
                     <button class="myButton" type="submit"><span>downvote this</span></button>
-                </form>
             </div>
     `);
 }
